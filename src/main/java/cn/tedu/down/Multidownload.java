@@ -11,13 +11,12 @@ public class Multidownload {
     static int ThreadCount = 3;   //线程的个数
     String path;  //确定下载地址
     String filename;//确定文件名
-    String filepathname;//确定文件路径
 
     public Multidownload(String path) {
         this.path = path;
-        this.filename = path.substring(path.lastIndexOf("/") + 1);
-        this.filepathname = path.substring(0, path.lastIndexOf("/") + 1);
+        this.filename = path.substring(23);
     }
+
 
     public void start() {
 
@@ -34,13 +33,12 @@ public class Multidownload {
             if (conn.getResponseCode() == 200) {
                 //获取到请求资源文件的长度
                 int length = conn.getContentLength();
-                File filepath = new File(filepathname);
-                if (!filepath.exists()) {
-                    filepath.mkdirs();
+                File file = new File(filename);
+                if (!file.getParentFile().exists()) {
+                    file.getParentFile().mkdirs();
                 }
-                File file = new File(path + filename);
                 //创建随机存储文件
-                RandomAccessFile raf = new RandomAccessFile(file, "rwd");
+                RandomAccessFile raf = new RandomAccessFile(file, "rws");
                 //设置临时文件的大小
                 raf.setLength(length);
                 //关闭raf
@@ -84,14 +82,6 @@ class DownLoadThread extends Thread {
         this.endIndex = endIndex;
         this.threadId = threadId;
     }
-
-    public static void main(String[] args) {
-
-
-    }
-
-    ;
-
     @Override
     public void run() {
         //使用http请求下载安装包文件
@@ -113,7 +103,7 @@ class DownLoadThread extends Thread {
                 int total = 0;
                 //拿到临时文件的引用
                 File file = new File(filename);
-                RandomAccessFile raf = new RandomAccessFile(file, "rwd");
+                RandomAccessFile raf = new RandomAccessFile(file, "rws");
                 //更新文件的写入位置，startIndex
                 raf.seek(startIndex);
                 while ((len = is.read(b)) != -1) {
@@ -128,8 +118,5 @@ class DownLoadThread extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
-
 }
