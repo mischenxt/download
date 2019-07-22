@@ -11,10 +11,12 @@ public class Multidownload {
     static int ThreadCount = 3;   //线程的个数
     String path;  //确定下载地址
     String filename;//确定文件名
+    String filepath;//确定文件路径
 
     public Multidownload(String path) {
-        this.path = path;
-        this.filename = path.substring(23);
+        this.path = "http://doc.tedu.cn/tts/"+path;
+        this.filepath = path ; 
+        this.filename = path.substring(path.lastIndexOf("/")+1);
     }
 
 
@@ -33,7 +35,7 @@ public class Multidownload {
             if (conn.getResponseCode() == 200) {
                 //获取到请求资源文件的长度
                 int length = conn.getContentLength();
-                File file = new File(filename);
+                File file = new File(filepath);
                 if (!file.getParentFile().exists()) {
                     file.getParentFile().mkdirs();
                 }
@@ -56,7 +58,7 @@ public class Multidownload {
                         endIndex = length - 1;
                     }
                     System.out.println("线程" + i + "的下载区间是" + startIndex + "到" + endIndex);
-                    new DownLoadThread(startIndex, endIndex, i, path, filename).start(); //创建线程下载数据
+                    new DownLoadThread(startIndex, endIndex, i, path, filepath).start(); //创建线程下载数据
                 }
             }
 
@@ -72,12 +74,12 @@ class DownLoadThread extends Thread {
     int endIndex;
     int threadId;
     String path;
-    String filename;
+    String filepath;
 
-    public DownLoadThread(int startIndex, int endIndex, int threadId, String path, String filename) {
+    public DownLoadThread(int startIndex, int endIndex, int threadId, String path, String filepath) {
         super();
         this.path = path;
-        this.filename = filename;
+        this.filepath = filepath;
         this.startIndex = startIndex;
         this.endIndex = endIndex;
         this.threadId = threadId;
@@ -102,7 +104,7 @@ class DownLoadThread extends Thread {
                 int len = 0;
                 int total = 0;
                 //拿到临时文件的引用
-                File file = new File(filename);
+                File file = new File(filepath);
                 RandomAccessFile raf = new RandomAccessFile(file, "rws");
                 //更新文件的写入位置，startIndex
                 raf.seek(startIndex);

@@ -15,6 +15,7 @@ public class ApplicationStartDemo {
             if (!str.contains("tts")) {
                 continue;
             }
+            str =  str.substring(str.indexOf("tts"),str.lastIndexOf("\"}"));
             sb.append(str);
             sb.append("\r\n");
         }
@@ -24,11 +25,12 @@ public class ApplicationStartDemo {
     }
 
     public static void main(String[] args) throws IOException {
-        String str = readLine("D:\\project\\down\\src\\file");
+        String str = readLine("file2");
         String[] path = str.split("\\r\\n");
+        System.out.println(path.length);
         System.out.println(path[0]);
         for (int i = 0; i < path.length; i++) {
-            new Multidownload("http://doc.tedu.cn/tts/" + path[i]).start();
+            new Multidownload( path[i]).start();
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {
